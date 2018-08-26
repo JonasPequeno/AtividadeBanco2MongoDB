@@ -12,6 +12,7 @@ import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,13 +60,15 @@ public class VendaDao {
         return deleteOne.getDeletedCount() > 0;
     }
     
-    public void insereItemVenda(int codigo, ItemVenda item) {
-       collection.updateOne( eq("codigo",codigo),(push("itens",item)));
+    public boolean insereItemVenda(int codigo, ItemVenda item) {
+        UpdateResult updateOne = collection.updateOne( eq("codigo",codigo),(push("itens",item)));
+        return updateOne.getModifiedCount() > 0;
     }
     
     public void criaIndice() {
         
         IndexOptions opcoes = new IndexOptions().unique(true);
-        collection.createIndex(Indexes.ascending("codigo"), opcoes);      
+        collection.createIndex(Indexes.ascending("codigo"), opcoes);
+        
     }
 }
